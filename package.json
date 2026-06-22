@@ -1,0 +1,9 @@
+{
+  "name": "lemon-css",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node node/build.js",
+    "watch": "node node/build.js --watch"
+  }
+}
