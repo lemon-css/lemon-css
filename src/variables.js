@@ -7,6 +7,8 @@ export const variables = {
   '--secondary-light': '#d3d3d3',
   '--secondary-deep': '#a9a9a9',
 
+  '--hover': '#2bdf08',
+
   '--red': '#ff0000',
   '--red-light': '#ff7f7f',
   '--red-deep': '#8b0000',
