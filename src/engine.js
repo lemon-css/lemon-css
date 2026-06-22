@@ -30,7 +30,6 @@ export function parseEngineClass(className) {
     if (match) {
       prefix = coreClass.substring(0, coreClass.indexOf('['));
       customValue = match[2].replace(/_/g, ' ');
-
       if (utilities.dynamicPrefixes && utilities.dynamicPrefixes[prefix]) {
         const propConfig = utilities.dynamicPrefixes[prefix];
         if (typeof propConfig === 'object' && !Array.isArray(propConfig)) {
@@ -50,10 +49,13 @@ export function parseEngineClass(className) {
         isDynamic = true;
         cssProperties = prefix === 'bg-' ? 'background-color' : (prefix === 'txt-' ? 'color' : 'border-color');
       }
+    } else if (coreClass.startsWith('border')) {
+      isDynamic = true;
+      prefix = coreClass; 
     }
   }
 
-  if (!cssProperties && !isChildSelector) return '';
+  if (!cssProperties && !isChildSelector && !isDynamic) return '';
 
   const escapedClassName = className
     .replace(/:/g, '\\:')
@@ -72,18 +74,12 @@ export function parseEngineClass(className) {
 
   if (isDynamic) {
     if (prefix.startsWith('border')) {
-      let side = prefix === 'border-' ? '' : '-' + prefix.split('-')[1];
+      let side = prefix === 'border' ? '' : '-' + prefix.split('-')[1];
       let propBase = `border${side}`;
       if (!customValue) {
         rule += `  ${propBase}: 1px solid currentColor !important;\n`;
       } else {
-        if (customValue.includes('px') || customValue.includes('rem') || !isNaN(customValue)) {
-          rule += `  ${propBase}-width: ${customValue} !important;\n`;
-        } else if (customValue === 'solid' || customValue === 'dashed' || customValue === 'dotted') {
-          rule += `  ${propBase}-style: ${customValue} !important;\n`;
-        } else {
-          rule += `  ${propBase}-color: ${customValue} !important;\n`;
-        }
+        rule += `  ${propBase}: ${customValue} !important;\n`;
       }
     } else if (prefix === 'bg-') {
       rule += `  background-color: ${customValue} !important;\n`;
