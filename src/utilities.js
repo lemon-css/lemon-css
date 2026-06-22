@@ -1,6 +1,6 @@
 export const utilities = {
-  // ১. ডায়নামিক প্রিফিক্স (ভবিষ্যতে কাস্টম [...] ভ্যালু হ্যান্ডেল করার জন্য)
-  dynamicPrefixes: {
+  // 1. Dynamic Prefix [...])
+dynamicPrefixes: {
     'p-': 'padding',
     'py-': ['padding-top', 'padding-bottom'],
     'px-': ['padding-left', 'padding-right'],
@@ -23,18 +23,18 @@ export const utilities = {
     "mn-h-": "min-height",
     "bg-": "background-color",
     'bg-img-': 'background',
-    "txt-": {size: "font-size",color: "color"},
+    "txt-": { size: "font-size", color: "color" },
     'txt-space-': 'letter-spacing',
-    "border-": {"width": "border-width", "color": "border-color"},
-    "border-t-": {"width": "border-top-width", "color": "border-top-color"},
-    "border-b-": {"width": "border-bottom-width", "color": "border-bottom-color"},
-    "border-l-": {"width": "border-left-width", "color": "border-left-color"},
-    "border-r-": {"width": "border-right-width", "color": "border-right-color"},
-    "rounded-": {"radius": "border-radius"},
-    "rounded-t-": {"radius-tl": "border-top-left-radius", "radius-tr": "border-top-right-radius"},
-    "rounded-b-": {"radius-bl": "border-bottom-left-radius", "radius-br": "border-bottom-right-radius"},
-    "rounded-l-": {"radius-tl": "border-top-left-radius", "radius-bl": "border-bottom-left-radius"},
-    "rounded-r-": {"radius-tr": "border-top-right-radius", "radius-br": "border-bottom-right-radius"},
+    "border-": "border",
+    "border-t-": "border-top",
+    "border-b-": "border-bottom",
+    "border-l-": "border-left",
+    "border-r-": "border-right",
+    "rounded-": { "radius": "border-radius" },
+    "rounded-t-": { "tl": "border-top-left-radius", "tr": "border-top-right-radius" },
+    "rounded-b-": { "bl": "border-bottom-left-radius", "br": "border-bottom-right-radius" },
+    "rounded-l-": { "tl": "border-top-left-radius", "bl": "border-bottom-left-radius" },
+    "rounded-r-": { "tr": "border-top-right-radius", "br": "border-bottom-right-radius" },
     'gap-': 'gap',
     'gap-x-': 'column-gap',
     'gap-y-': 'row-gap',
@@ -43,10 +43,10 @@ export const utilities = {
     'left-': 'left',
     'right-': 'right',
     'line-': 'line-height',
-    'blur-': 'filter',
-    'bg-blur-': 'backdrop-filter',
-    'brightness-': 'filter',
-    'bg-brightness-': 'backdrop-filter',
+    'scale-': 'transform',
+    'rotate-': 'transform',
+    'grid-cols-': 'grid-template-columns',
+    'blur-': 'filter', 
     'opacity-': 'opacity',
     'z-': 'z-index'
   },
@@ -349,7 +349,6 @@ export const utilities = {
     'line-10': { 'line-height': '3 !important' },
 
     // Border Widths & Styles
-    'border': { 'border': '1px solid currentColor !important' },
     'border-1': { 'border-width': '1px !important' },
     'border-2': { 'border-width': '2px !important' },
     'border-3': { 'border-width': '3px !important' },
