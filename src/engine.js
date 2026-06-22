@@ -1,4 +1,7 @@
 import { utilities } from './utilities.js';
+import { variables } from '../src/variables.js';
+import { reset } from '../src/reset.js';
+import { components } from '../src/components.js';
 
 export function parseEngineClass(className) {
   const isHover = className.startsWith('hover:');
@@ -110,10 +113,20 @@ export function parseEngineClass(className) {
         rule += `  ${cssProperties}: ${customValue} !important;\n`;
       }
     } else {
-      if (prefix === 'bg-' && (customValue.includes('linear-gradient') || customValue.includes('radial-gradient') || customValue.includes('gradient'))) {
-        rule += `  background: ${customValue} !important;\n`;
+      if (prefix === 'bg-') {
+        rule += `  background-color: ${customValue} !important;\n`;
       } else if (prefix === 'bg-img-') {
-        rule += `  background: ${customValue} !important;\n`;
+        if (customValue.includes('gradient')) {
+          rule += `  background: ${customValue} !important;\n`;
+        } else {
+          rule += `  background-image: url('${customValue}') !important;\n`;
+        }
+      } else if (prefix === 'txt-' && (!cssProperties || typeof cssProperties !== 'object')) {
+        if (customValue.endsWith('px') || customValue.endsWith('rem') || customValue.endsWith('%') || !isNaN(customValue)) {
+          rule += `  font-size: ${customValue} !important;\n`;
+        } else {
+          rule += `  color: ${customValue} !important;\n`;
+        }
       } else if (cssProperties && typeof cssProperties === 'object' && !Array.isArray(cssProperties)) {
         for (const [key, propName] of Object.entries(cssProperties)) {
           rule += `  ${propName}: ${customValue} !important;\n`;
@@ -122,14 +135,6 @@ export function parseEngineClass(className) {
         cssProperties.forEach(prop => {
           rule += `  ${prop}: ${customValue} !important;\n`;
         });
-      } else if (prefix === 'bg-') {
-        rule += `  background-color: ${customValue} !important;\n`;
-      } else if (prefix === 'txt-' && (!cssProperties || typeof cssProperties !== 'object')) {
-        if (customValue.endsWith('px') || customValue.endsWith('rem') || customValue.endsWith('%') || !isNaN(customValue)) {
-          rule += `  font-size: ${customValue} !important;\n`;
-        } else {
-          rule += `  color: ${customValue} !important;\n`;
-        }
       } else if (cssProperties) {
         rule += `  ${cssProperties}: ${customValue} !important;\n`;
       }
