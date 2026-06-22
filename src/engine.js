@@ -95,11 +95,13 @@ class LemonEngine {
         if (utilities.dynamicPrefixes && utilities.dynamicPrefixes[prefix]) {
           cssProperties = utilities.dynamicPrefixes[prefix];
           isDynamic = true;
+        } else if (isChildSelector) {
+          isDynamic = true;
         }
       }
     }
 
-    if (!cssProperties) return '';
+    if (!cssProperties && !isChildSelector) return '';
 
     const escapedClassName = className
       .replace(/:/g, '\\:')
@@ -109,7 +111,8 @@ class LemonEngine {
       .replace(/\)/g, '\\)')
       .replace(/,/g, '\\,')
       .replace(/#/g, '\\#')
-      .replace(/%/g, '\\%');
+      .replace(/%/g, '\\%')
+      .replace(/;/g, '\\;');
 
     let selector = '';
     if (isChildSelector) {
@@ -121,6 +124,12 @@ class LemonEngine {
     let rule = `${selector} {\n`;
 
     if (isDynamic) {
+      if (isChildSelector && !cssProperties && prefix) {
+        if (utilities.dynamicPrefixes && utilities.dynamicPrefixes[prefix]) {
+          cssProperties = utilities.dynamicPrefixes[prefix];
+        }
+      }
+
       if (customValue.startsWith('var(--')) {
         if (prefix === 'bg-') {
           rule += `  background: ${customValue} !important;\n`;
@@ -132,7 +141,7 @@ class LemonEngine {
           }
         } else if (prefix === 'border-') {
           rule += `  border-color: ${customValue} !important;\n`;
-        } else if (typeof cssProperties === 'object' && !Array.isArray(cssProperties)) {
+        } else if (typeof cssProperties === 'object' && !Array.isArray(cssProperties) && cssProperties !== null) {
           const keys = Object.keys(cssProperties);
           if (keys.includes('size') || keys.includes('width') || keys.includes('radius')) {
             const prop = cssProperties['size'] || cssProperties['width'] || cssProperties['radius'] || cssProperties[keys[0]];
@@ -143,11 +152,11 @@ class LemonEngine {
             const firstProp = Object.values(cssProperties)[0];
             rule += `  ${firstProp}: ${customValue} !important;\n`;
           }
-        } else {
+        } else if (cssProperties) {
           rule += `  ${cssProperties}: ${customValue} !important;\n`;
         }
       } else {
-        if (typeof cssProperties === 'object' && !Array.isArray(cssProperties)) {
+        if (typeof cssProperties === 'object' && !Array.isArray(cssProperties) && cssProperties !== null) {
           const isNumber = /^-?\d+(\.\d+)?(px|rem|em|%|vh|vw|ch|rem)?$/.test(customValue) || !isNaN(customValue);
           if (isNumber) {
             const prop = cssProperties['size'] || cssProperties['width'] || cssProperties['radius'] || cssProperties['radius-tl'] || Object.values(cssProperties)[0];
@@ -166,16 +175,16 @@ class LemonEngine {
           cssProperties.forEach(prop => {
             rule += `  ${prop}: ${customValue} !important;\n`;
           });
-        } else {
+        } else if (cssProperties) {
           rule += `  ${cssProperties}: ${customValue} !important;\n`;
         }
       }
     } else {
-      if (typeof cssProperties === 'object' && !Array.isArray(cssProperties)) {
+      if (typeof cssProperties === 'object' && !Array.isArray(cssProperties) && cssProperties !== null) {
         for (const [prop, val] of Object.entries(cssProperties)) {
           rule += `  ${prop}: ${val};\n`;
         }
-      } else {
+      } else if (cssProperties) {
         rule += `  ${cssProperties}: ${customValue} !important;\n`;
       }
     }
