@@ -31,19 +31,7 @@ export function parseEngineClass(className) {
       prefix = coreClass.substring(0, coreClass.indexOf('['));
       customValue = match[2].replace(/_/g, ' ');
       if (utilities.dynamicPrefixes && utilities.dynamicPrefixes[prefix]) {
-        const propConfig = utilities.dynamicPrefixes[prefix];
-        if (typeof propConfig === 'object' && !Array.isArray(propConfig)) {
-          const isNumberOrSize = /^-?[0-9.]+(px|rem|em|%|vh|vw|ch|rem)?$/.test(customValue) || !isNaN(customValue);
-          if (prefix === 'txt-') {
-            cssProperties = (isNumberOrSize || customValue.toLowerCase().includes('size') || customValue.toLowerCase().includes('font')) ? propConfig.size : propConfig.color;
-          } else if (prefix.startsWith('border-')) {
-            cssProperties = (isNumberOrSize || customValue.toLowerCase().includes('px') || customValue.toLowerCase().includes('rem')) ? propConfig.width : propConfig.color;
-          } else {
-            cssProperties = Object.values(propConfig);
-          }
-        } else {
-          cssProperties = propConfig;
-        }
+        cssProperties = utilities.dynamicPrefixes[prefix];
         isDynamic = true;
       } else if (prefix === 'bg-' || prefix === 'txt-' || prefix.startsWith('border')) {
         isDynamic = true;
@@ -51,7 +39,7 @@ export function parseEngineClass(className) {
       }
     } else if (coreClass.startsWith('border')) {
       isDynamic = true;
-      prefix = coreClass; 
+      prefix = coreClass;
     }
   }
 
@@ -74,8 +62,9 @@ export function parseEngineClass(className) {
 
   if (isDynamic) {
     if (prefix.startsWith('border')) {
-      let side = prefix === 'border' ? '' : '-' + prefix.split('-')[1];
-      let propBase = `border${side}`;
+      const sideMap = { 'border-t': 'border-top', 'border-b': 'border-bottom', 'border-l': 'border-left', 'border-r': 'border-right', 'border': 'border' };
+      let propBase = sideMap[prefix.replace(/-$/, '')] || 'border';
+      
       if (!customValue) {
         rule += `  ${propBase}: 1px solid currentColor !important;\n`;
       } else {
