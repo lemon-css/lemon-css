@@ -34,11 +34,13 @@ export function parseEngineClass(className) {
       if (utilities.dynamicPrefixes && utilities.dynamicPrefixes[prefix]) {
         cssProperties = utilities.dynamicPrefixes[prefix];
         isDynamic = true;
+      } else if (prefix === 'bg-' || prefix === 'txt-' || prefix === 'border-') {
+        isDynamic = true;
       }
     }
   }
 
-  if (!cssProperties && !isChildSelector) return '';
+  if (!cssProperties && !isChildSelector && !isDynamic) return '';
 
   const escapedClassName = className
     .replace(/:/g, '\\:')
@@ -87,7 +89,9 @@ export function parseEngineClass(className) {
         rule += `  ${cssProperties}: ${customValue} !important;\n`;
       }
     } else {
-      if (typeof cssProperties === 'object' && !Array.isArray(cssProperties) && cssProperties !== null) {
+      if (prefix === 'bg-' && (customValue.includes('linear-gradient') || customValue.includes('radial-gradient') || customValue.includes('gradient'))) {
+        rule += `  background: ${customValue} !important;\n`;
+      } else if (typeof cssProperties === 'object' && !Array.isArray(cssProperties) && cssProperties !== null) {
         const isNumber = /^-?\d+(\.\d+)?(px|rem|em|%|vh|vw|ch|rem)?$/.test(customValue) || !isNaN(customValue);
         if (isNumber) {
           const prop = cssProperties['size'] || cssProperties['width'] || cssProperties['radius'] || cssProperties['radius-tl'] || Object.values(cssProperties)[0];
@@ -106,6 +110,14 @@ export function parseEngineClass(className) {
         cssProperties.forEach(prop => {
           rule += `  ${prop}: ${customValue} !important;\n`;
         });
+      } else if (prefix === 'bg-') {
+        rule += `  background: ${customValue} !important;\n`;
+      } else if (prefix === 'txt-') {
+        if (customValue.endsWith('px') || customValue.endsWith('rem') || customValue.endsWith('%') || !isNaN(customValue)) {
+          rule += `  font-size: ${customValue} !important;\n`;
+        } else {
+          rule += `  color: ${customValue} !important;\n`;
+        }
       } else if (cssProperties) {
         rule += `  ${cssProperties}: ${customValue} !important;\n`;
       }
