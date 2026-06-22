@@ -79,7 +79,7 @@ export function parseEngineClass(className) {
 
   let selector = '';
   if (isChildSelector) {
-    selector = isHover ? `.${escapedClassName}:hover ${childTag}` : `.${escapedClassName} ${childTag}`;
+    selector = isHover ? `.${escapedClassName}:hover ${childTag}:hover` : `.${escapedClassName} ${childTag}`;
   } else {
     selector = isHover ? `.${escapedClassName}:hover` : `.${escapedClassName}`;
   }
